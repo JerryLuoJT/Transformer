@@ -72,7 +72,8 @@
 - 运行基础注意力测试并记录结果。
 - 检查完整模型导入并记录当前阻塞问题。
 - 添加 `.gitignore`，排除 Python 缓存、虚拟环境、模型权重和实验输出。
-- 开始使用 Git 管理项目。
+- 初始化本地 Git 仓库，默认分支为 `main`。
+- 创建 GitHub 私有仓库 [`JerryLuoJT/Transformer`](https://github.com/JerryLuoJT/Transformer)，并推送 `main` 分支。
 
 ### 2026-08-21 至 2026-08-28（根据现有文件修改时间整理）
 

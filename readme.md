@@ -14,3 +14,5 @@ X∈R
 表示：
 
 2 个句子,每个句子 4 个 token,每个 token 8 维
+
+项目的实现进展、验证状态和后续事项见 [WORKLOG.md](WORKLOG.md)。
