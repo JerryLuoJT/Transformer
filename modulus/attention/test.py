@@ -1,5 +1,5 @@
 import torch
-from attention import MultiHeadAttention, create_causal_mask
+from .attention import MultiHeadAttention, create_causal_mask
 torch.manual_seed(42)
 torch.manual_seed(42)
 

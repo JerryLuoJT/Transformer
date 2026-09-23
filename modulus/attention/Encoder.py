@@ -2,9 +2,9 @@ import torch
 import torch.nn as nn
 import math
 import torch.nn.functional as F
-from attention import MultiHeadAttention
-from FFN import FeedForward
-from position import PositionalEncoding
+from .attention import MultiHeadAttention
+from .FFN import FeedForward
+from .position import PositionalEncoding
 class EncoderLayer(nn.Module):
     def __init__(self, d_model, d_ff, num_heads, dropout=0.1):
         super().__init__()
@@ -17,7 +17,7 @@ class EncoderLayer(nn.Module):
 
     def forward(self, X, mask=None):
         # self-attention
-        attn_output, attn_weight = self.self_attention(X, mask)
+        attn_output, attn_weight = self.self_attention(X, mask=mask)
         # residual connection, normalization, dropout
         X = self.norm1(X+ self.dropout1(attn_output))
         # feed forward network
@@ -36,6 +36,7 @@ class Encoder(nn.Module):
         dropout=0.1
     ):
         super().__init__()
+        self.d_model = d_model
         self.embedding = nn.Embedding(vocab_size, d_model)
         self.positional_encoding = PositionalEncoding(d_model, max_len)
         self.layers = nn.ModuleList([
@@ -45,8 +46,9 @@ class Encoder(nn.Module):
         self.dropout = nn.Dropout(dropout)
 
     def forward(self, X, mask=None):
-        X = self.embedding(X)
+        X = self.embedding(X) * math.sqrt(self.d_model)
         X = self.positional_encoding(X)
+        X = self.dropout(X)
         for layer in self.layers:
             X = layer(X, mask)[0]
         return X

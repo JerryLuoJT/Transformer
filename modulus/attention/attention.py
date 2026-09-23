@@ -30,11 +30,11 @@ class QKVProjection(nn.Module):
         """
         dk = Q.size(-1)
         K = K.transpose(-2, -1)
-        L = score.size(-1)
         # QK^T
-        score = torch.matmul(Q,K)
+        score = torch.matmul(Q, K)
         # /sqrt(dk)
-        score = score / torch.sqrt(dk)
+        score = score / math.sqrt(dk)
+        L = score.size(-1)
         #构建掩码矩阵：先构建一个全1矩阵，然后变成下三角矩阵，最后将其放在X的设备上
         mask = torch.tril(torch.ones(L,L,device= X.device))
         #将上三角矩阵的值置为-inf
@@ -92,9 +92,11 @@ class MultiHeadAttention(nn.Module):
         # [B, L, d_model]
         # ->
         # [B, L, h, d_k]
+        # 交叉注意力时 K/V 来自 encoder，长度是 Lk，不能复用查询长度 L
+        Lk = K.size(1)
         Q = Q.view(B,L,self.num_heads,self.d_k)
-        K = K.view(B,L,self.num_heads,self.d_k)
-        V = V.view(B,L,self.num_heads,self.d_k)
+        K = K.view(B,Lk,self.num_heads,self.d_k)
+        V = V.view(B,Lk,self.num_heads,self.d_k)
         #3. 转置
         # [B, L, h, d_k]
         # ->
